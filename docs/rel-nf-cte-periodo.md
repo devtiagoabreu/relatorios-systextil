@@ -255,16 +255,29 @@ CT-e  9949/1 · 23/03/2024 · 5.028,12 · soma NFs 83.751,08 · 6,00% do frete
 
 | # | Pendência | Impacto | Como resolver |
 |---|---|---|---|
-| 1 | **Razão social da empresa** | Não sai no relatório | A `OBRF_010` não tem coluna com "EMPRESA" nas 5 primeiras. Descobrir entre as colunas 6–25 e ligar em `FATU_500.CODIGO_EMPRESA` |
+| 1 | **Razão social da empresa** | Não sai no relatório | **Adiada por decisão** — o relatório segue sem a empresa, em vez de forçar um join não validado. Consultas salvas em `rel-nf-cte.sql` (S4.3 e S4.4) |
 | 2 | Domínio do `SITUACAO_ENTRADA` | Sai o número cru | Falta localizar a tabela que traduz o código |
 | 3 | CNPJ formatado no resultado | Não sai | O Select 1 de `rel-nf-cte.sql` monta o CNPJ com `LPAD` |
 
-Consulta para resolver a pendência 1:
+**Sobre a pendência 1.** A tela `OBRF_F275` exibe a coluna "Empresa" e a interface
+`I_OBRF_010` declara um campo `EMPRESA`, mas a tabela física `OBRF_010` não tem nenhuma coluna
+com esse nome. Sem saber qual coluna é, qualquer join seria chute — e chute em relatório
+financeiro é pior que campo ausente. Fica para quando o usuário quiser retomar; as consultas
+de descoberta já estão prontas em `rel-nf-cte.sql`, seção S4.
+
+Para resolver a pendência 1 depois:
 
 ```sql
+-- Todas as colunas do OBRF_016
 SELECT COLUMN_ID, COLUMN_NAME, DATA_LENGTH FROM ALL_TAB_COLUMNS
-WHERE OWNER='SYSTEXTIL' AND TABLE_NAME='OBRF_010' AND COLUMN_ID BETWEEN 6 AND 25
-ORDER BY COLUMN_ID;
+WHERE OWNER='SYSTEXTIL' AND TABLE_NAME='OBRF_016' ORDER BY COLUMN_ID;
+
+-- Procurar "empresa" sob qualquer nome na OBRF_010
+SELECT COLUMN_ID, COLUMN_NAME, DATA_LENGTH FROM ALL_TAB_COLUMNS
+WHERE OWNER='SYSTEXTIL' AND TABLE_NAME='OBRF_010'
+  AND (UPPER(COLUMN_NAME) LIKE '%EMPR%' OR UPPER(COLUMN_NAME) LIKE '%FILIAL%'
+       OR UPPER(COLUMN_NAME) LIKE '%ESTAB%' OR UPPER(COLUMN_NAME) LIKE '%CNPJ%'
+       OR UPPER(COLUMN_NAME) LIKE '%CGC%') ORDER BY COLUMN_ID;
 ```
 
 ---

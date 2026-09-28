@@ -241,3 +241,32 @@ ORDER BY    cte.DATA_EMISSAO DESC, cte.DOCUMENTO, cte.SERIE, nf.NUMERO_NOTA, nf.
 -- FROM ALL_TAB_COLUMNS
 -- WHERE OWNER='SYSTEXTIL' AND TABLE_NAME='OBRF_010' AND COLUMN_ID BETWEEN 6 AND 25
 -- ORDER BY COLUMN_ID;
+--
+-- ---------------------------------------------------------------------------
+--  PENDENCIA ADIADA: razao social da empresa
+--
+--  DECISAO: o relatorio segue SEM a empresa. Nao vale forcar um join chutado.
+--  Quando for retomada, rodar S4.3 e S4.4 abaixo e so entao escolher o caminho.
+--
+--  Indicio: a tela OBRF_F275 exibe a coluna "Empresa", e a interface I_OBRF_010
+--  declara um campo EMPRESA. Porem a tabela fisica OBRF_010 nao tem nenhuma coluna
+--  com esse nome nas 5 primeiras posicoes. Provavelmente o nome fisico seja outro.
+-- ---------------------------------------------------------------------------
+--
+-- S4.3  Todas as colunas do OBRF_016 (17 linhas).
+--       A interface I_OBRF_016 tem COD_EMPRESA; confirmar se a tabela fisica tambem tem.
+-- SELECT COLUMN_ID, COLUMN_NAME, DATA_LENGTH
+-- FROM ALL_TAB_COLUMNS
+-- WHERE OWNER='SYSTEXTIL' AND TABLE_NAME='OBRF_016'
+-- ORDER BY COLUMN_ID;
+--
+-- S4.4  Procurar "empresa" sob qualquer nome dentro da OBRF_010.
+--       Se vier vazia, a empresa nao esta na OBRF_010 e o caminho passa a ser
+--       a I_OBRF_016 (ou outra tabela) — documentar como decisao de arquitetura.
+-- SELECT COLUMN_ID, COLUMN_NAME, DATA_LENGTH
+-- FROM ALL_TAB_COLUMNS
+-- WHERE OWNER='SYSTEXTIL' AND TABLE_NAME='OBRF_010'
+--   AND (UPPER(COLUMN_NAME) LIKE '%EMPR%' OR UPPER(COLUMN_NAME) LIKE '%FILIAL%'
+--        OR UPPER(COLUMN_NAME) LIKE '%ESTAB%' OR UPPER(COLUMN_NAME) LIKE '%CNPJ%'
+--        OR UPPER(COLUMN_NAME) LIKE '%CGC%')
+-- ORDER BY COLUMN_ID;

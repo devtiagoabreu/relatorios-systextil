@@ -134,7 +134,7 @@ ORDER BY cte.DOCUMENTO, cte.SERIE, nf.NUMERO_NOTA, nf.SERIE_NOTA;
 - [x] 4.1 `SUPR_010.FORNECEDOR9/4/2` = `OBRF_016.FORNECEDOR9/4/2` → join direto
 - [x] 4.2 `SUPR_010.NOME_FORNECEDOR` / `NOME_FANTASIA` ✅
 - [x] 4.3 `FATU_500.CODIGO_EMPRESA` / `NOME_EMPRESA` / `NOME_FANTASIA` / `CGC_9/4/2` ✅
-- [ ] 4.4 Descobrir coluna de EMPRESA na `OBRF_010` (colunas 6 a 25)
+- [ ] 4.4 Descobrir coluna de EMPRESA na `OBRF_010` — **adiada por decisão**, consultas prontas em `rel-nf-cte.sql` (S4.3/S4.4)
 
 ## Convenções de nomes confirmadas no banco
 
